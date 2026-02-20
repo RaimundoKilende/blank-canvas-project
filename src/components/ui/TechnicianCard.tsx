@@ -43,7 +43,7 @@ export function TechnicianCard({
     >
       <div className="flex items-start gap-4">
         <div className="relative">
-          <Avatar className="w-16 h-16 border-2 border-border">
+          <Avatar className="w-12 h-12 border-2 border-border">
             <AvatarImage src={avatar} alt={name} />
             <AvatarFallback className="bg-secondary text-lg font-semibold">
               {name.split(" ").map((n) => n[0]).join("")}

@@ -855,6 +855,30 @@ export type Database = {
           },
         ]
       }
+      technician_comments: {
+        Row: {
+          author_id: string
+          comment: string
+          created_at: string
+          id: string
+          technician_user_id: string
+        }
+        Insert: {
+          author_id: string
+          comment: string
+          created_at?: string
+          id?: string
+          technician_user_id: string
+        }
+        Update: {
+          author_id?: string
+          comment?: string
+          created_at?: string
+          id?: string
+          technician_user_id?: string
+        }
+        Relationships: []
+      }
       technicians: {
         Row: {
           active: boolean | null

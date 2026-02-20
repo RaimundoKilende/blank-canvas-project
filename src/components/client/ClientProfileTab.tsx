@@ -105,7 +105,7 @@ export function ClientProfileTab() {
                     }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary/50 rounded-full blur-md opacity-50" />
-                  <Avatar className="w-18 h-18 border-4 border-primary/30 relative">
+                  <Avatar className="w-14 h-14 border-3 border-primary/30 relative">
                     <AvatarImage src={avatarUrl || undefined} />
                     <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-primary text-xl font-display font-bold">
                       {profile?.name?.charAt(0) || "U"}
