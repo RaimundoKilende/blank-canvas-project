@@ -38,7 +38,7 @@ export function VendorProfileTab() {
     <div className="px-4 pt-6 pb-24 space-y-6">
       {/* Header Card */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card rounded-2xl p-6 text-center">
-        <Avatar className="w-20 h-20 mx-auto mb-3">
+        <Avatar className="w-14 h-14 mx-auto mb-3">
           <AvatarFallback className="bg-primary/10 text-primary text-2xl">
             <Store className="w-8 h-8" />
           </AvatarFallback>

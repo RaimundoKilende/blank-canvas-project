@@ -1,4 +1,5 @@
 import { Star, MapPin, CheckCircle, Phone, Mail, Briefcase, Calendar, Award, Image, Wrench, Clock, Car } from "lucide-react";
+import { TechnicianCommentsSection } from "@/components/client/TechnicianCommentsSection";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -46,7 +47,7 @@ export function TechnicianProfileViewDialog({
         <div className="space-y-5">
           {/* Header - Avatar and Name */}
           <div className="flex flex-col items-center text-center">
-            <Avatar className="w-24 h-24 border-4 border-primary/20 mb-4">
+            <Avatar className="w-16 h-16 border-3 border-primary/20 mb-3">
               <AvatarImage src={technician.profile?.avatar_url || undefined} />
               <AvatarFallback className="bg-primary/10 text-primary text-2xl font-bold">
                 {technician.profile?.name?.split(" ").map((n) => n[0]).join("") || "T"}
@@ -86,10 +87,11 @@ export function TechnicianProfileViewDialog({
 
           {/* Tabs for CV sections */}
           <Tabs defaultValue="about" className="w-full">
-            <TabsList className="w-full grid grid-cols-3">
+            <TabsList className="w-full grid grid-cols-4">
               <TabsTrigger value="about" className="text-xs">Sobre</TabsTrigger>
               <TabsTrigger value="experience" className="text-xs">Experiência</TabsTrigger>
               <TabsTrigger value="portfolio" className="text-xs">Portfólio</TabsTrigger>
+              <TabsTrigger value="comments" className="text-xs">Comentários</TabsTrigger>
             </TabsList>
 
             {/* About Tab */}
@@ -257,6 +259,11 @@ export function TechnicianProfileViewDialog({
                   <p className="text-sm text-muted-foreground">Nenhuma foto no portfólio</p>
                 </div>
               )}
+            </TabsContent>
+
+            {/* Comments Tab */}
+            <TabsContent value="comments" className="mt-4">
+              <TechnicianCommentsSection technicianUserId={technician.user_id} />
             </TabsContent>
           </Tabs>
 
