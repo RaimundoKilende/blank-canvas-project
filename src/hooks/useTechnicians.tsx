@@ -71,11 +71,12 @@ export function useTechnicians(filterBySpecialty?: string) {
         profile: profiles?.find((p) => p.user_id === tech.user_id),
       })) as Technician[];
 
-      // Filter by specialty if provided
+      // Filter by specialty if provided (uses partial match for flexibility)
       if (filterBySpecialty) {
+        const query = filterBySpecialty.toLowerCase();
         result = result.filter((tech) => 
           tech.specialties && tech.specialties.some(
-            (s) => s.toLowerCase() === filterBySpecialty.toLowerCase()
+            (s) => s.toLowerCase().includes(query) || query.includes(s.toLowerCase())
           )
         );
       }
