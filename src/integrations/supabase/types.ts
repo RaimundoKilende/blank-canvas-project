@@ -586,6 +586,7 @@ export type Database = {
           quote_sent_at: string | null
           quote_status: string | null
           rating: number | null
+          scheduled_date: string | null
           started_at: string | null
           status: Database["public"]["Enums"]["service_status"]
           technician_id: string | null
@@ -623,6 +624,7 @@ export type Database = {
           quote_sent_at?: string | null
           quote_status?: string | null
           rating?: number | null
+          scheduled_date?: string | null
           started_at?: string | null
           status?: Database["public"]["Enums"]["service_status"]
           technician_id?: string | null
@@ -660,6 +662,7 @@ export type Database = {
           quote_sent_at?: string | null
           quote_status?: string | null
           rating?: number | null
+          scheduled_date?: string | null
           started_at?: string | null
           status?: Database["public"]["Enums"]["service_status"]
           technician_id?: string | null
