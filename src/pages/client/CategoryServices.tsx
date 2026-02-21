@@ -54,7 +54,7 @@ export default function CategoryServices() {
 
   // Get selected service for technician filtering
   const selectedService = services.find(s => s.id === selectedServiceId);
-  const { technicians } = useTechnicians(selectedService?.name || category?.name);
+  const { technicians } = useTechnicians(selectedService?.name);
 
   // Calculate nearby technicians with distance
   const nearbyTechnicians = useMemo(() => {
