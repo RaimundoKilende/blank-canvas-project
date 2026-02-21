@@ -180,6 +180,13 @@ export function useServiceRequests() {
       const urgencyMultiplier = input.urgency === "urgent" ? 1.2 : 1;
       const totalPrice = basePrice * urgencyMultiplier;
 
+      // Build scheduled_date as a full timestamp if scheduling is set
+      let scheduledDateValue: string | null = null;
+      if (input.scheduling_type === "scheduled" && input.scheduled_date) {
+        const time = input.scheduled_time || "09:00";
+        scheduledDateValue = `${input.scheduled_date}T${time}:00`;
+      }
+
       const { data, error } = await supabase
         .from("service_requests")
         .insert({
@@ -196,9 +203,7 @@ export function useServiceRequests() {
           total_price: totalPrice,
           status: "pending",
           technician_id: input.technician_id || null,
-          scheduling_type: input.scheduling_type || "now",
-          scheduled_date: input.scheduled_date || null,
-          scheduled_time: input.scheduled_time || null,
+          scheduled_date: scheduledDateValue,
         })
         .select()
         .single();
