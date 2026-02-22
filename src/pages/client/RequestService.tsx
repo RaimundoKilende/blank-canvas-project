@@ -252,15 +252,10 @@ export default function RequestService() {
       } else if (!isDirectRequest && user) {
         const selectedCat = categories.find(c => c.id === selectedCategoryId);
         const categoryName = selectedCat?.name || "";
+        const selectedSvc = services.find(s => s.id === selectedServiceId);
+        const serviceName = selectedSvc?.name || categoryName;
 
-        const { data: categorySpecialties } = await supabase
-          .from("specialties")
-          .select("name")
-          .eq("category_id", selectedCategoryId)
-          .eq("active", true);
-
-        const specialtyNames = (categorySpecialties || []).map(s => s.name.toLowerCase());
-
+        // Get eligible technicians whose specialties match the selected service name
         const { data: eligibleTechnicians } = await supabase
           .from("technicians")
           .select("user_id, specialties")
@@ -268,23 +263,30 @@ export default function RequestService() {
           .eq("verified", true);
 
         if (eligibleTechnicians && eligibleTechnicians.length > 0) {
+          const serviceNameLower = serviceName.toLowerCase();
+          const serviceWords = serviceNameLower.split(/\s+/).filter(w => w.length > 2);
+
           const matchingTechnicians = eligibleTechnicians.filter(tech => {
-            if (!tech.specialties || tech.specialties.length === 0) return true;
+            if (!tech.specialties || tech.specialties.length === 0) return false;
             return tech.specialties.some((techSpec: string) => {
-              const lowerTechSpec = techSpec.toLowerCase();
-              if (specialtyNames.includes(lowerTechSpec)) return true;
-              if (lowerTechSpec.includes(categoryName.toLowerCase()) || 
-                  categoryName.toLowerCase().includes(lowerTechSpec)) return true;
-              return false;
+              const specLower = techSpec.toLowerCase();
+              // Direct match
+              if (specLower.includes(serviceNameLower) || serviceNameLower.includes(specLower)) return true;
+              // Fuzzy word match
+              const specWords = specLower.split(/\s+/).filter(w => w.length > 2);
+              const matchCount = serviceWords.filter(sw => 
+                specWords.some(spw => spw.includes(sw) || sw.includes(spw))
+              ).length;
+              return matchCount >= Math.max(1, Math.floor(serviceWords.length * 0.6));
             });
           });
 
           const notifications = matchingTechnicians.map(tech => ({
             user_id: tech.user_id,
             title: "Nova solicitação de serviço!",
-            message: `Um cliente precisa de ${categoryName}. Seja o primeiro a aceitar!`,
+            message: `Um cliente precisa de ${serviceName}. ${selectedSvc?.price_type === "quote" ? "Envie seu orçamento!" : "Seja o primeiro a aceitar!"}`,
             type: "service_request",
-            data: { client_id: user.id, category: categoryName, category_id: selectedCategoryId, broadcast: true },
+            data: { client_id: user.id, category: categoryName, category_id: selectedCategoryId, service_name: serviceName, broadcast: true },
           }));
 
           if (notifications.length > 0) {

@@ -239,6 +239,19 @@ export function useServiceRequests() {
       if (checkError) throw checkError;
       if (hasActive) throw new Error("Você já possui um serviço ativo. Conclua-o antes de aceitar outro.");
 
+      // Check if another technician already accepted this request
+      const { data: currentRequest, error: fetchError } = await supabase
+        .from("service_requests")
+        .select("status, technician_id")
+        .eq("id", requestId)
+        .single();
+
+      if (fetchError) throw fetchError;
+      if (currentRequest.status !== "pending") throw new Error("Esta solicitação já foi aceita por outro técnico.");
+      if (currentRequest.technician_id && currentRequest.technician_id !== user.id) {
+        throw new Error("Esta solicitação já foi aceita por outro técnico.");
+      }
+
       const { data, error } = await supabase
         .from("service_requests")
         .update({
@@ -608,7 +621,9 @@ export function useServiceRequests() {
         total_price: amount,
       };
 
-      // If still pending, also accept it
+      // For quote-type services: assign technician but keep status pending
+      // so other technicians can also send quotes
+      // For non-quote services: accept normally
       if (current.status === "pending") {
         updateData.technician_id = user.id;
         updateData.status = "accepted";
