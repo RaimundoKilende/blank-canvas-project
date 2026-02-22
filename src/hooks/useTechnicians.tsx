@@ -71,13 +71,22 @@ export function useTechnicians(filterBySpecialty?: string) {
         profile: profiles?.find((p) => p.user_id === tech.user_id),
       })) as Technician[];
 
-      // Filter by specialty if provided (uses partial match for flexibility)
+      // Filter by specialty if provided (uses fuzzy word matching for flexibility)
       if (filterBySpecialty) {
-        const query = filterBySpecialty.toLowerCase();
+        const queryWords = filterBySpecialty.toLowerCase().split(/\s+/).filter(w => w.length > 2);
         result = result.filter((tech) => 
-          tech.specialties && tech.specialties.some(
-            (s) => s.toLowerCase().includes(query) || query.includes(s.toLowerCase())
-          )
+          tech.specialties && tech.specialties.some((s) => {
+            const specLower = s.toLowerCase();
+            const queryLower = filterBySpecialty.toLowerCase();
+            // Direct substring match
+            if (specLower.includes(queryLower) || queryLower.includes(specLower)) return true;
+            // Word-level match: if most words from the query appear in the specialty (or vice versa)
+            const specWords = specLower.split(/\s+/).filter(w => w.length > 2);
+            const matchCount = queryWords.filter(qw => 
+              specWords.some(sw => sw.includes(qw) || qw.includes(sw))
+            ).length;
+            return matchCount >= Math.max(1, Math.floor(queryWords.length * 0.6));
+          })
         );
       }
 
