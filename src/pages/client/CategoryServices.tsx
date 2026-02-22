@@ -241,8 +241,8 @@ export default function CategoryServices() {
                 </AnimatePresence>
               </div>
 
-              {/* Nearby Technicians Section */}
-              {nearbyTechnicians.length > 0 && (
+              {/* Nearby Technicians Section - only show when a service is selected */}
+              {selectedServiceId && nearbyTechnicians.length > 0 && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
